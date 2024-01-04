@@ -1,6 +1,19 @@
+import { useState } from "react";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 export const Header = () => {
+  const [wishlistCount, setWishlistCount] = useState(0);
+  const [cartCount, setCartCount] = useState(0);
+  const { wishlist } = useSelector((state) => state.wishlistSlice);
+  const cart = useSelector((state) => state.cartSlice);
+
+  useEffect(() => {
+    setWishlistCount(wishlist?.length);
+    setCartCount(cart?.length);
+  }, [wishlist, cart]);
+
   return (
     <nav
       style={{ position: "fixed", top: "0", zIndex: "99" }}
@@ -26,7 +39,7 @@ export const Header = () => {
                 style={{ position: "absolute", top: "0", right: "0" }}
                 className="badge bg-info mx-1"
               >
-                2
+                {wishlistCount}
               </span>
             </div>
           </Link>
@@ -43,7 +56,7 @@ export const Header = () => {
                 style={{ position: "absolute", top: "0", right: "0" }}
                 className="badge  bg-info mx-1"
               >
-                2
+                {cartCount}
               </span>
             </div>
           </Link>

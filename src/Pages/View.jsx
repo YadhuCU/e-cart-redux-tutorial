@@ -1,38 +1,63 @@
+import { useEffect, useState } from "react";
+import { Spinner } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { addToWishlist } from "../redux/slices/wishlistSlice";
+
 export const View = () => {
+  const { id } = useParams();
+  const { loading } = useSelector((state) => state.productSlice);
+  const { wishlist } = useSelector((state) => state.wishlistSlice);
+  const [product, setProduct] = useState({});
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const products = JSON.parse(localStorage.getItem("products"));
+    setProduct(products.find((item) => item.id == id));
+  }, []);
+
+  const handleWishlist = (product) => {
+    const existingProduct = wishlist.find((item) => item.id == product.id);
+    if (existingProduct) {
+      alert("Product already exist.");
+    } else {
+      dispatch(addToWishlist(product));
+    }
+  };
   return (
     <div style={{ marginTop: "10rem" }} className="container">
-      <div className="row align-items-center">
-        <div className="col-md-5">
-          <img
-            style={{ width: "100%", height: "600px", objectFit: "cover" }}
-            src="https://source.unsplash.com/random"
-            alt="Product"
-          />
-        </div>
-        <div className="col-md-1"></div>
-        <div className="col-md-6">
-          <p>PID: 19slj2e93Sf2</p>
-          <h1>Product Name</h1>
-          <p>
-            Lorem ipsum dolor sit amet, officia excepteur ex fugiat
-            reprehenderit enim labore culpa sint ad nisi Lorem pariatur mollit
-            ex esse exercitation amet. Nisi anim cupidatat excepteur officia.
-            Reprehenderit nostrud nostrud ipsum Lorem est aliquip amet voluptate
-            voluptate dolor minim nulla est proident. Nostrud officia pariatur
-            ut officia. Sit irure elit esse ea nulla sunt ex occaecat
-            reprehenderit commodo officia dolor Lorem duis laboris cupidatat
-          </p>
-          <div className="d-flex w-100 justify-content-start gap-5">
-            <button className="btn btn-outline-dark">
-              <i className="fa-regular fa-heart"></i>
-            </button>
-            <button className="btn btn-outline-dark">
-              <i className="fa-solid fa-cart-shopping mx-1"></i>
-              Add To Cart
-            </button>
+      {loading ? (
+        <Spinner animation="border" variant="primary" />
+      ) : (
+        <div className="row align-items-center">
+          <div className="col-md-5">
+            <img
+              style={{ width: "100%", height: "600px", objectFit: "cover" }}
+              src={product?.thumbnail}
+              alt="Product"
+            />
+          </div>
+          <div className="col-md-1"></div>
+          <div className="col-md-6">
+            <p>PID: {product?.id}</p>
+            <h1>{product?.title}</h1>
+            <h1>$ {product?.price}</h1>
+            <p>{product?.description}</p>
+            <div className="d-flex w-100 justify-content-start gap-5">
+              <button
+                onClick={() => handleWishlist(product)}
+                className="btn btn-outline-dark"
+              >
+                <i className="fa-regular fa-heart"></i>
+              </button>
+              <button className="btn btn-outline-dark">
+                <i className="fa-solid fa-cart-shopping mx-1"></i>
+                Add To Cart
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
