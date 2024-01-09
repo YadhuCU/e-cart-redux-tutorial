@@ -3,6 +3,8 @@ import { Spinner } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { addToWishlist } from "../redux/slices/wishlistSlice";
+import { addToCart } from "../redux/slices/cartSlice";
+import { Header } from "../Components/Header";
 
 export const View = () => {
   const { id } = useParams();
@@ -25,39 +27,45 @@ export const View = () => {
     }
   };
   return (
-    <div style={{ marginTop: "10rem" }} className="container">
-      {loading ? (
-        <Spinner animation="border" variant="primary" />
-      ) : (
-        <div className="row align-items-center">
-          <div className="col-md-5">
-            <img
-              style={{ width: "100%", height: "600px", objectFit: "cover" }}
-              src={product?.thumbnail}
-              alt="Product"
-            />
-          </div>
-          <div className="col-md-1"></div>
-          <div className="col-md-6">
-            <p>PID: {product?.id}</p>
-            <h1>{product?.title}</h1>
-            <h1>$ {product?.price}</h1>
-            <p>{product?.description}</p>
-            <div className="d-flex w-100 justify-content-start gap-5">
-              <button
-                onClick={() => handleWishlist(product)}
-                className="btn btn-outline-dark"
-              >
-                <i className="fa-regular fa-heart"></i>
-              </button>
-              <button className="btn btn-outline-dark">
-                <i className="fa-solid fa-cart-shopping mx-1"></i>
-                Add To Cart
-              </button>
+    <>
+      <Header />
+      <div style={{ marginTop: "10rem" }} className="container">
+        {loading ? (
+          <Spinner animation="border" variant="primary" />
+        ) : (
+          <div className="row align-items-center">
+            <div className="col-md-5">
+              <img
+                style={{ width: "100%", height: "600px", objectFit: "cover" }}
+                src={product?.thumbnail}
+                alt="Product"
+              />
+            </div>
+            <div className="col-md-1"></div>
+            <div className="col-md-6">
+              <p>PID: {product?.id}</p>
+              <h1>{product?.title}</h1>
+              <h1>$ {product?.price}</h1>
+              <p>{product?.description}</p>
+              <div className="d-flex w-100 justify-content-start gap-5">
+                <button
+                  onClick={() => handleWishlist(product)}
+                  className="btn btn-outline-dark"
+                >
+                  <i className="fa-regular fa-heart"></i>
+                </button>
+                <button
+                  onClick={() => dispatch(addToCart(product))}
+                  className="btn btn-outline-dark"
+                >
+                  <i className="fa-solid fa-cart-shopping mx-1"></i>
+                  Add To Cart
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 };

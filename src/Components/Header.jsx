@@ -1,17 +1,27 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { Form } from "react-bootstrap";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { productSearch } from "../redux/slices/prodcutSlice";
 
-export const Header = () => {
+export const Header = ({ insideHome }) => {
   const [wishlistCount, setWishlistCount] = useState(0);
   const [cartCount, setCartCount] = useState(0);
   const { wishlist } = useSelector((state) => state.wishlistSlice);
   const cart = useSelector((state) => state.cartSlice);
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     setWishlistCount(wishlist?.length);
-    setCartCount(cart?.length);
+    const count = cart?.reduce(
+      (prevValue, currValue) => currValue.quantity + prevValue,
+      0,
+    );
+    console.log("count", count);
+    setCartCount(count);
   }, [wishlist, cart]);
 
   return (
@@ -28,6 +38,18 @@ export const Header = () => {
             </h2>
           </Link>
         </div>
+        {insideHome && (
+          <div style={{ marginLeft: "auto" }}>
+            <Form.Control
+              onChange={(event) =>
+                dispatch(productSearch(event.target.value.toLowerCase()))
+              }
+              type="text"
+              placeholder="Search Product"
+            />
+          </div>
+        )}
+
         <div className="text-light">
           <Link to={"/wishlist"}>
             <div
